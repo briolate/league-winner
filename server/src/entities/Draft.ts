@@ -10,7 +10,7 @@ import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
+export class Draft extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
@@ -24,13 +24,34 @@ export class User extends BaseEntity {
   updatedAt = Date;
 
   @Field(() => String)
-  @Column({ unique: true })
-  username!: string;
-
-  @Field()
-  @Column({ unique: true })
-  email!: string;
-
   @Column()
-  password!: string;
+  year!: string;
+
+  @Field(() => String)
+  @Column()
+  qb!: string;
+
+  @Field(() => String)
+  @Column()
+  rb1!: string;
+
+  @Field(() => String)
+  @Column()
+  rb2!: string;
+
+  @Field(() => String)
+  @Column()
+  rb3!: string;
+
+  @Field(() => String)
+  @Column()
+  wr1!: string;
+
+  @Field(() => String)
+  @Column()
+  wr2!: string;
+
+  @Field(() => String)
+  @Column()
+  wr3!: string;
 }

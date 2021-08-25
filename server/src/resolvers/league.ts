@@ -1,54 +1,41 @@
-import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg } from "type-graphql";
 import { League } from "../entities/League";
-import { MyContext } from "../types";
 
 @Resolver()
 export class LeagueResolver {
   @Query(() => [League])
-  leagues(@Ctx() { em }: MyContext): Promise<League[]> {
-    return em.find(League, {});
+  async leagues(): Promise<League[]> {
+    return League.find();
   }
 
   @Query(() => League, { nullable: true })
-  league(
-    @Arg("id") id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<League | null> {
-    return em.findOne(League, { id });
+  league(@Arg("id") id: number): Promise<League | undefined> {
+    return League.findOne(id);
   }
 
   @Mutation(() => League, { nullable: true })
-  async createLeague(
-    @Arg("name") name: string,
-    @Ctx() { em }: MyContext
-  ): Promise<League> {
-    const league = em.create(League, { name });
-    await em.persistAndFlush(league);
-    return league;
+  async createLeague(@Arg("name") name: string): Promise<League> {
+    return League.create({ name }).save();
   }
 
   @Mutation(() => League, { nullable: true })
   async updateLeague(
     @Arg("id") id: number,
-    @Arg("name") name: string,
-    @Ctx() { em }: MyContext
-  ): Promise<League | null> {
-    const league = em.findOne(League, { id });
+    @Arg("name", () => String, { nullable: true }) name: string
+  ): Promise<League | undefined> {
+    const league = League.findOne(id);
     if (!league) {
-      return null;
+      return undefined;
     }
     if (typeof name !== "undefined") {
-      await em.persistAndFlush(league);
+      await League.update({ id }, { name });
     }
     return league;
   }
 
   @Mutation(() => Boolean)
-  async deleteLeague(
-    @Arg("id") id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<boolean> {
-    await em.nativeDelete(League, { id });
+  async deleteLeague(@Arg("id") id: number): Promise<boolean> {
+    await League.delete(id);
     return true;
   }
 }
