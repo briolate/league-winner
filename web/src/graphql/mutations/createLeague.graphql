@@ -1,0 +1,10 @@
+mutation CreateLeague($input: LeagueInput!) {
+  createLeague(input: $input) {
+    id
+    name
+    memberCount
+    creatorId
+    createdAt
+    updatedAt
+  }
+}

@@ -1,5 +1,24 @@
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { isAuth } from "../middleware/isAuth";
+import { MyContext } from "../types";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  InputType,
+  Field,
+  Ctx,
+  UseMiddleware,
+} from "type-graphql";
 import { League } from "../entities/League";
+
+@InputType()
+class LeagueInput {
+  @Field()
+  name: string;
+  @Field()
+  memberCount: number;
+}
 
 @Resolver()
 export class LeagueResolver {
@@ -14,8 +33,15 @@ export class LeagueResolver {
   }
 
   @Mutation(() => League, { nullable: true })
-  async createLeague(@Arg("name") name: string): Promise<League> {
-    return League.create({ name }).save();
+  @UseMiddleware(isAuth)
+  async createLeague(
+    @Arg("input") input: LeagueInput,
+    @Ctx() { req }: MyContext
+  ): Promise<League> {
+    return League.create({
+      ...input,
+      creatorId: req.session.userId,
+    }).save();
   }
 
   @Mutation(() => League, { nullable: true })

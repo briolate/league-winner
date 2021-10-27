@@ -1,7 +1,7 @@
 import React from "react";
 import NextLink from "next/link";
-import { useMeQuery, useLogoutMutation } from "../generated/graphql";
-import { isServer } from "../utils/isServer";
+import { useMeQuery, useLogoutMutation } from "../../generated/graphql";
+import { isServer } from "../../utils/isServer";
 
 interface NavbarProps {}
 
@@ -13,6 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   if (fetching) {
     // data is loading
   } else if (!data?.me) {
+    // user not logged in
     body = (
       <>
         <NextLink href="/login">Login</NextLink>
@@ -27,6 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
           <p>Logging out</p>
         ) : (
           <button
+            className="btn"
             onClick={() => {
               logout();
             }}
@@ -38,7 +40,11 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
     );
   }
 
-  return <>{body}</>;
+  return (
+    <div className="navbar">
+      <div className="navbody">{body}</div>
+    </div>
+  );
 };
 
 export default Navbar;

@@ -1,11 +1,12 @@
 import React from "react";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
-import { Formik, Form } from "formik";
-import { InputField } from "../components/InputField";
-import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
+import { withUrqlClient } from "next-urql";
+import { Formik, Form } from "formik";
+import { useLoginMutation } from "../generated/graphql";
+import { InputField } from "../components/InputField";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { toErrorMap } from "../utils/toErrorMap";
 
 interface RegisterProps {}
 
@@ -21,7 +22,11 @@ const Login: React.FC<RegisterProps> = ({}) => {
         if (response.data?.login.errors) {
           setErrors(toErrorMap(response.data.login.errors));
         } else if (response.data?.login.user) {
-          router.push("/");
+          if (typeof router.query.next === "string") {
+            router.push(router.query.next || "");
+          } else {
+            router.push("/");
+          }
         }
       }}
     >
@@ -38,7 +43,12 @@ const Login: React.FC<RegisterProps> = ({}) => {
             label="Password"
             type="password"
           />
-          <button type="submit">Login</button>
+          <NextLink href="/forgot-password">Forgot password?</NextLink>
+          {isSubmitting ? (
+            <p>Submitting</p>
+          ) : (
+            <button type="submit">Login</button>
+          )}
         </Form>
       )}
     </Formik>

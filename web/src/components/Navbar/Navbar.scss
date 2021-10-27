@@ -1,0 +1,16 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: salmon;
+  height: 3rem;
+}
+
+.navbody {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 3rem;
+  gap: 1rem;
+}

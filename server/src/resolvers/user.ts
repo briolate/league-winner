@@ -59,7 +59,7 @@ export class UserResolver {
         errors: [
           {
             field: "newPassword",
-            message: "length must be greater than 3",
+            message: "Length must be greater than 3",
           },
         ],
       };
@@ -67,12 +67,13 @@ export class UserResolver {
 
     const key = FORGET_PASSWORD_PREFIX + token;
     const userId = await redis.get(key);
+
     if (!userId) {
       return {
         errors: [
           {
             field: "token",
-            message: "token expired",
+            message: "Token expired",
           },
         ],
       };
@@ -86,7 +87,7 @@ export class UserResolver {
         errors: [
           {
             field: "token",
-            message: "user no longer exists",
+            message: "User no longer exists",
           },
         ],
       };
@@ -129,7 +130,7 @@ export class UserResolver {
 
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
+      `<a href="http://localhost:3000/change-password/${token}">Reset password</a>`
     );
 
     return true;
@@ -205,6 +206,7 @@ export class UserResolver {
         ? { where: { email: usernameOrEmail } }
         : { where: { username: usernameOrEmail } }
     );
+
     if (!user) {
       return {
         errors: [
@@ -215,6 +217,7 @@ export class UserResolver {
         ],
       };
     }
+
     const valid = await argon2.verify(user.password, password);
     if (!valid) {
       return {

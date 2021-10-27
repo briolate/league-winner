@@ -23,9 +23,16 @@ export type FieldError = {
 export type League = {
   __typename?: 'League';
   id: Scalars['Float'];
+  name: Scalars['String'];
+  memberCount: Scalars['Float'];
+  creatorId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type LeagueInput = {
   name: Scalars['String'];
+  memberCount: Scalars['Float'];
 };
 
 export type Mutation = {
@@ -42,7 +49,7 @@ export type Mutation = {
 
 
 export type MutationCreateLeagueArgs = {
-  name: Scalars['String'];
+  input: LeagueInput;
 };
 
 
@@ -93,10 +100,10 @@ export type QueryLeagueArgs = {
 export type User = {
   __typename?: 'User';
   id: Scalars['Float'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
   username: Scalars['String'];
   email: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -111,7 +118,33 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
+
 export type RegularUserFragment = { __typename?: 'User', id: number, username: string };
+
+export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> };
+
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
+
+export type CreateLeagueMutationVariables = Exact<{
+  input: LeagueInput;
+}>;
+
+
+export type CreateLeagueMutation = { __typename?: 'Mutation', createLeague?: Maybe<{ __typename?: 'League', id: number, name: string, memberCount: number, creatorId: number, createdAt: string, updatedAt: string }> };
+
+export type ForgotPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: boolean };
 
 export type LoginMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
@@ -133,30 +166,82 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
 
+export type LeaguesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LeaguesQuery = { __typename?: 'Query', leagues: Array<{ __typename?: 'League', id: number, name: string, memberCount: number, creatorId: number, createdAt: string, updatedAt: string }> };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string }> };
 
+export const RegularErrorFragmentDoc = gql`
+    fragment RegularError on FieldError {
+  field
+  message
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
   username
 }
     `;
+export const RegularUserResponseFragmentDoc = gql`
+    fragment RegularUserResponse on UserResponse {
+  errors {
+    ...RegularError
+  }
+  user {
+    ...RegularUser
+  }
+}
+    ${RegularErrorFragmentDoc}
+${RegularUserFragmentDoc}`;
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($token: String!, $newPassword: String!) {
+  changePassword(token: $token, newPassword: $newPassword) {
+    ...RegularUserResponse
+  }
+}
+    ${RegularUserResponseFragmentDoc}`;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const CreateLeagueDocument = gql`
+    mutation CreateLeague($input: LeagueInput!) {
+  createLeague(input: $input) {
+    id
+    name
+    memberCount
+    creatorId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useCreateLeagueMutation() {
+  return Urql.useMutation<CreateLeagueMutation, CreateLeagueMutationVariables>(CreateLeagueDocument);
+};
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
+};
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {
-    errors {
-      field
-      message
-    }
-    user {
-      ...RegularUser
-    }
+    ...RegularUserResponse
   }
 }
-    ${RegularUserFragmentDoc}`;
+    ${RegularUserResponseFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -173,19 +258,29 @@ export function useLogoutMutation() {
 export const RegisterDocument = gql`
     mutation Register($options: UsernamePasswordInput!) {
   register(options: $options) {
-    errors {
-      field
-      message
-    }
-    user {
-      ...RegularUser
-    }
+    ...RegularUserResponse
   }
 }
-    ${RegularUserFragmentDoc}`;
+    ${RegularUserResponseFragmentDoc}`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const LeaguesDocument = gql`
+    query Leagues {
+  leagues {
+    id
+    name
+    memberCount
+    creatorId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useLeaguesQuery(options: Omit<Urql.UseQueryArgs<LeaguesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<LeaguesQuery>({ query: LeaguesDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

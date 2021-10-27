@@ -1,11 +1,11 @@
 import React from "react";
 import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
-import { Formik, Form } from "formik";
-import { InputField } from "../components/InputField";
-import { useRegisterMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { Formik, Form } from "formik";
+import { useRegisterMutation } from "../generated/graphql";
+import { InputField } from "../components/InputField";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { toErrorMap } from "../utils/toErrorMap";
 
 interface RegisterProps {}
 
@@ -35,7 +35,11 @@ const Register: React.FC<RegisterProps> = ({}) => {
             label="Password"
             type="password"
           />
-          <button type="submit">Register</button>
+          {isSubmitting ? (
+            <p>Submitting</p>
+          ) : (
+            <button type="submit">Register</button>
+          )}
         </Form>
       )}
     </Formik>

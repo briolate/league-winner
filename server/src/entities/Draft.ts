@@ -1,57 +1,66 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  CreateDateColumn,
-  Column,
-  BaseEntity,
-} from "typeorm";
-import { ObjectType, Field } from "type-graphql";
+// import {
+//   Entity,
+//   PrimaryGeneratedColumn,
+//   UpdateDateColumn,
+//   CreateDateColumn,
+//   Column,
+//   BaseEntity,
+//   // ManyToOne,
+// } from "typeorm";
+// import { ObjectType, Field } from "type-graphql";
+// // import { Member } from "./Member";
 
-@ObjectType()
-@Entity()
-export class Draft extends BaseEntity {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
+// @ObjectType()
+// @Entity()
+// export class Draft extends BaseEntity {
+//   @Field()
+//   @PrimaryGeneratedColumn()
+//   id!: number;
 
-  @Field(() => String)
-  @CreateDateColumn()
-  createdAt = Date;
+//   @Field()
+//   @Column()
+//   year!: string;
 
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt = Date;
+//   @Field()
+//   @Column()
+//   qb!: string;
 
-  @Field(() => String)
-  @Column()
-  year!: string;
+//   @Field()
+//   @Column()
+//   rb1!: string;
 
-  @Field(() => String)
-  @Column()
-  qb!: string;
+//   @Field()
+//   @Column()
+//   rb2!: string;
 
-  @Field(() => String)
-  @Column()
-  rb1!: string;
+//   @Field()
+//   @Column()
+//   rb3!: string;
 
-  @Field(() => String)
-  @Column()
-  rb2!: string;
+//   @Field()
+//   @Column()
+//   wr1!: string;
 
-  @Field(() => String)
-  @Column()
-  rb3!: string;
+//   @Field()
+//   @Column()
+//   wr2!: string;
 
-  @Field(() => String)
-  @Column()
-  wr1!: string;
+//   @Field()
+//   @Column()
+//   wr3!: string;
 
-  @Field(() => String)
-  @Column()
-  wr2!: string;
+//   @Field()
+//   @Column()
+//   te!: string;
 
-  @Field(() => String)
-  @Column()
-  wr3!: string;
-}
+//   // @ManyToOne(() => Member, (member) => member.drafts)
+//   // member: Member;
+
+//   @Field(() => String)
+//   @CreateDateColumn()
+//   createdAt = Date;
+
+//   @Field(() => String)
+//   @UpdateDateColumn()
+//   updatedAt = Date;
+// }
