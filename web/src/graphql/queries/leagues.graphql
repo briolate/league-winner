@@ -1,8 +1,9 @@
-query Leagues {
-  leagues {
+query Leagues($limit: Int!, $cursor: String) {
+  leagues(limit: $limit, cursor: $cursor) {
     id
     name
     memberCount
+    descriptionSnippet
     creatorId
     createdAt
     updatedAt

@@ -16,7 +16,7 @@ const CreateLeague: React.FC<{}> = ({}) => {
   return (
     <Layout>
       <Formik
-        initialValues={{ name: "", memberCount: 0 }}
+        initialValues={{ name: "", memberCount: 0, description: "" }}
         onSubmit={async (values) => {
           // Add validation here
           const { error } = await createLeague({ input: values });
@@ -37,6 +37,11 @@ const CreateLeague: React.FC<{}> = ({}) => {
               placeholder="Ex: 10 or 12"
               label="Number of members"
               type="number"
+            />
+            <InputField
+              name="description"
+              placeholder="League description"
+              label="League description"
             />
             {isSubmitting ? (
               <p>Submitting</p>

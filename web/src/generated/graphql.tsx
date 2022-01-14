@@ -25,14 +25,17 @@ export type League = {
   id: Scalars['Float'];
   name: Scalars['String'];
   memberCount: Scalars['Float'];
+  description: Scalars['String'];
   creatorId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  descriptionSnippet: Scalars['String'];
 };
 
 export type LeagueInput = {
   name: Scalars['String'];
   memberCount: Scalars['Float'];
+  description: Scalars['String'];
 };
 
 export type Mutation = {
@@ -54,8 +57,10 @@ export type MutationCreateLeagueArgs = {
 
 
 export type MutationUpdateLeagueArgs = {
-  name?: Maybe<Scalars['String']>;
-  id: Scalars['Float'];
+  description: Scalars['String'];
+  memberCount: Scalars['Int'];
+  name: Scalars['String'];
+  id: Scalars['Int'];
 };
 
 
@@ -90,6 +95,12 @@ export type Query = {
   leagues: Array<League>;
   league?: Maybe<League>;
   me?: Maybe<User>;
+};
+
+
+export type QueryLeaguesArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 
@@ -166,10 +177,13 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
 
-export type LeaguesQueryVariables = Exact<{ [key: string]: never; }>;
+export type LeaguesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
 
 
-export type LeaguesQuery = { __typename?: 'Query', leagues: Array<{ __typename?: 'League', id: number, name: string, memberCount: number, creatorId: number, createdAt: string, updatedAt: string }> };
+export type LeaguesQuery = { __typename?: 'Query', leagues: Array<{ __typename?: 'League', id: number, name: string, memberCount: number, descriptionSnippet: string, creatorId: number, createdAt: string, updatedAt: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -267,11 +281,12 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const LeaguesDocument = gql`
-    query Leagues {
-  leagues {
+    query Leagues($limit: Int!, $cursor: String) {
+  leagues(limit: $limit, cursor: $cursor) {
     id
     name
     memberCount
+    descriptionSnippet
     creatorId
     createdAt
     updatedAt

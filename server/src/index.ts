@@ -24,7 +24,7 @@ const main = async () => {
     entities: [User, League],
   });
 
-  console.log(conn);
+  await conn.runMigrations();
 
   const app = express();
 

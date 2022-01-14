@@ -6,7 +6,22 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 import { useLeaguesQuery } from "../generated/graphql";
 
 const Index = () => {
-  const [{ data }] = useLeaguesQuery();
+  const [{ data, fetching }] = useLeaguesQuery({
+    variables: {
+      limit: 10,
+    },
+  });
+
+  if (!fetching && !data) {
+    return (
+      <div>
+        You have no leagues! Create one
+        <NextLink href="/create-league">
+          <span className="link">here</span>
+        </NextLink>
+      </div>
+    );
+  }
 
   console.log(data);
 
@@ -14,10 +29,17 @@ const Index = () => {
     <Layout>
       <NextLink href="/create-league">Create League</NextLink>
       <br />
-      {!data ? (
+      {!data && fetching ? (
         <div>loading...</div>
       ) : (
-        data.leagues.map((league) => <div key={league.id}>{league.name}</div>)
+        <div className="leagueList">
+          {data!.leagues.map((league) => (
+            <div className="leagueItem" key={league.id}>
+              <p>{league.name}</p>
+              <p>{league.descriptionSnippet}</p>
+            </div>
+          ))}
+        </div>
       )}
     </Layout>
   );

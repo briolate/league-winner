@@ -25,7 +25,11 @@ export class League extends BaseEntity {
 
   @Field()
   @Column()
-  memberCount: number;
+  memberCount!: number;
+
+  @Field()
+  @Column()
+  description!: string;
 
   @Field()
   @Column()
